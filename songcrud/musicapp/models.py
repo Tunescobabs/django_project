@@ -12,7 +12,7 @@ class Artist(models.Model):
     
 class Song(models.Model):
     artist = models.ForeignKey(Artist, on_delete=models.CASCADE) #To show relationship btween Song and Aritist for song to be deleted when artist is deleted from th db
-    title=models.IntegerField()
+    title=models.CharField(max_length=50)
     date_released=models.DateField(default= datetime.today)
     likes=models.CharField(max_length=1000)
     artiste_id=models.IntegerField()
