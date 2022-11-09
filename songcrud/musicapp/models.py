@@ -1,23 +1,32 @@
-from datetime import datetime
-from email.policy import default
-from unittest.util import _MAX_LENGTH
+from django.utils import timezone
 from django.db import models
+from django.contrib.auth.models import User
+
 
 # Create your models here.
-class Artist(models.Model):
-    first_name=models.CharField(max_length=50)
-    last_name=models.CharField(max_length=50)
-    age=models.IntegerField()
 
-    
+
+class Artiste(models.Model):
+    first_name = models.CharField(max_length=100, null=True)
+    last_name = models.CharField(max_length=100, null=True)
+    age = models.IntegerField(null=True)
+
+    def __str__(self):
+        return self.first_name+' '+self.last_name
+
+
 class Song(models.Model):
-    artist = models.ForeignKey(Artist, on_delete=models.CASCADE) #To show relationship btween Song and Aritist for song to be deleted when artist is deleted from th db
-    title=models.CharField(max_length=50)
-    date_released=models.DateField(default= datetime.today)
-    likes=models.CharField(max_length=1000)
-    artiste_id=models.IntegerField()
+    artiste = models.ForeignKey(Artiste, null=True, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100, null=True)
+    date_released = models.DateTimeField(default=timezone.now, null=True)
+    likes = models.ManyToManyField(User, related_name='liked_song')
+
+    def __str__(self):
+        return self.title
+
 
 class Lyric(models.Model):
-    content = models.CharField(max_length=1000)
-    song_id =models.IntegerField()
-    Song = models.OneToOneField(Song, on_delete = models.CASCADE, primary_key = True) # a lyric has one to one relationship with a song
+    content = models.TextField(null=True)
+    song = models.ForeignKey(Song, null=True, on_delete=models.CASCADE)
+
+    
